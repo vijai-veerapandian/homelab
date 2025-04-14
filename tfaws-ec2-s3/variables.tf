@@ -36,7 +36,6 @@ variable "instance_names" {
 
 variable "instane_name" {
   type = string
-  default = demo_app
 }
 
 variable "my_ami" {
