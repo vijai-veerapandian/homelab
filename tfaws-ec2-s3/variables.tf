@@ -27,10 +27,16 @@ variable "public_subnets" {
     "public_subnet_1" = 1
   }
 }
-
+/*
 variable "instance_names" {
   type    = list(string)
   default = ["app1"]
+}
+*/
+
+variable "instane_name" {
+  type = string
+  default = demo_app
 }
 
 variable "my_ami" {

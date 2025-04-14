@@ -207,7 +207,7 @@ resource "aws_instance" "demo_app" {
 */
   tags = {
     Terraform   = "true"
-    Name        = "demo_app"
+    Name        = var.instane_name
     Environment = terraform.workspace
   }
 }

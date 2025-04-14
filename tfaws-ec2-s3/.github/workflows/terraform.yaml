@@ -1,0 +1,50 @@
+name: Terraform deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      instance_name:
+        description: "Name of the Instance"
+        required: true
+        type: string
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    name: Terraform workflow
+    runs-on: ubuntu-latest
+
+steps: 
+  # Step1: checkout the repository
+  - name: Checkout code
+    uses: actions/checkout@v3
+
+  # Step2: Configure AWS Credentials
+  - name: Configure AWS Credentials
+    uses: aws-actions/configure-aws-credentials@v2
+    with:
+      aws-access-key-id: ${{ secrets.TERRAFORMUSER_AWS_ACCESSKEY_ID }}
+      aws-secret-access-key: ${{ secrets.TERRAFORMUSER_AWS_SECRET_ACCESSKEY }}
+      aws-region: us-east-1
+  
+  # Step3: setup terraform
+  - name: Setup terraform
+    uses: hashicorp/setup-terraform@v2
+    with:
+      terraform_version: 1.11.04
+  
+  # Step4: Initialize, Validate, Plan and Apply (only on push to main)
+  - name: Terraform cmds
+    env: 
+      TF_VAR_instance_name: "${{github.event.inputs.instance_name}}"
+    if: github.ref == 'refs/heads/main'
+    run: |
+    terraform init
+    terraform validate
+    terraform plan
+    terraform apply -auto-approve
