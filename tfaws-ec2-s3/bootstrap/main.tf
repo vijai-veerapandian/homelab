@@ -1,3 +1,4 @@
+# create S3 bucket for terraform state
 resource "aws_s3_bucket" "state_bucket" {
   bucket = "mytf-state-app-bucket"
 
