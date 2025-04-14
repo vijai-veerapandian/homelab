@@ -201,35 +201,61 @@ resource "aws_instance" "demo_app" {
   subnet_id              = aws_subnet.public_subnets["public_subnet_1"].id
   vpc_security_group_ids = [aws_security_group.demo_sg.id]
   key_name               = aws_key_pair.generated.key_name
-  /*
-    lifecycle {
-  prevent_destroy = true
-  }
-*/
+  
   tags = {
     Terraform   = "true"
-    Name        = var.instane_name
+    Name        = var.instance_name
     Environment = terraform.workspace
   }
 }
 
-# 13 Deploy S3 Bucket only if its not available
+# Backend configuration for S3 and DynamoDB
 
-data "aws_s3_bucket" "existing_bucket" {
-  bucket = "mytf-state-app-bucket"
+terraform {
+  backend "s3" {
+    bucket         = "mytf-state-app-bucket"
+    key            = "terraform/state.tfstate"
+    region         = "us-east-1"
+    encrypt        = true
+    dynamodb_table = "terraform-lock-table"
+  }
+}
+
+resource "aws_dynamodb_table" "terraform_lock_table" {
+  name         = "terraform-lock-table"
+  billing_mode = "PAY_PER_REQUEST"
+
+  attribute {
+    name = "LockID"
+    type = "S"
+  }
+
+  tags = {
+    Name        = "Terraform Lock Table"
+  }
 }
 
 resource "aws_s3_bucket" "state_bucket" {
   bucket = "mytf-state-app-bucket"
-  count = length(data.aws_s3_bucket.existing_bucket.id) == 0 ? 1 : 0
 
-tags = {
+  tags = {
     Name        = "Terraform State Bucket"
-    Environment = "Production"
   }
 }
 
-# Output to confirm bucket creation or existence
-output "s3_bucket_status" {
-  value = length(data.aws_s3_bucket.existing_bucket.id) == 0 ? "Bucket created" : "Bucket already exists"
+resource "aws_s3_bucket_versioning" "state_bucket_versioning" {
+  bucket = aws_s3_bucket.state_bucket.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "state_bucket_block" {
+  bucket = aws_s3_bucket.state_bucket.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }

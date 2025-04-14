@@ -34,7 +34,7 @@ variable "instance_names" {
 }
 */
 
-variable "instane_name" {
+variable "instance_name" {
   type = string
 }
 

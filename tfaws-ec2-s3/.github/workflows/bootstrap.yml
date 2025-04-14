@@ -1,16 +1,11 @@
-name: Terraform Workflow
+name: Bootstrap Terraform Backend
 
 on:
-  push:
-    branches:
-      - main  # Trigger on pushes to the main branch
-  pull_request:
-    branches:
-      - main  # Trigger on pull requests to the main branch
+  workflow_dispatch:  # Trigger manually when needed
 
 jobs:
-  terraform:
-    name: Terraform Workflow
+  bootstrap:
+    name: Bootstrap Terraform Backend
     runs-on: ubuntu-latest
 
     steps:
@@ -32,15 +27,14 @@ jobs:
         with:
           terraform_version: 1.4.6
 
-      # Step 4: Initialize Terraform
+      # Step 4: Initialize Terraform (without backend)
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -backend=false
 
       # Step 5: Terraform Plan
       - name: Terraform Plan
-        run: terraform plan
+        run: terraform plan -out=tfplan
 
-      # Step 6: Terraform Apply (only on push to main)
+      # Step 6: Terraform Apply
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main'
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve tfplan

@@ -1,9 +1,0 @@
-# Ignore all .tfstate and logs
-
-*.tfstate
-*.tfstate.backup
-*.log
-
-# Ignore only temp folder
-.terraform/
-
