@@ -1,0 +1,60 @@
+name: Terraform Destroy an existing deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      instance_name:
+        description: "Name of the Instance"
+        required: true
+        type: string
+      destroy:
+        description: "Set to true to destroy infrastructure"
+        required: false
+        type: boolean
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    name: Terraform Workflow
+    runs-on: ubuntu-latest
+
+    steps: 
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Configure AWS Credentials
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.TERRAFORMUSER_AWS_ACCESSKEY_ID }}
+          aws-secret-access-key: ${{ secrets.TERRAFORMUSER_AWS_SECRET_ACCESSKEY }}
+          aws-region: us-east-1
+  
+      # Step 3: Setup Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.11.4
+  
+      # Step 4: Initialize Terraform
+      - name: Terraform Init
+        run: terraform init
+
+      # Step 5: Conditional Apply or Destroy
+      - name: Terraform Apply or Destroy
+        env: 
+          TF_VAR_instance_name: "${{ github.event.inputs.instance_name }}"
+        run: |
+          if [ "${{ github.event.inputs.destroy }}" = "true" ]; then
+            terraform destroy -auto-approve
+          else
+            terraform validate
+            terraform plan
+            terraform apply -auto-approve
+          fi
