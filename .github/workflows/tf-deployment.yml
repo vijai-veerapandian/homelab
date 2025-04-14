@@ -38,8 +38,8 @@ steps:
       TF_VAR_instance_name: "${{github.event.inputs.instance_name}}"
     if: github.ref == 'refs/heads/main'
     run: |
-    cd tfaws-ec2-s3/
-    terraform init
-    terraform validate
-    terraform plan
-    terraform apply -auto-approve
+      cd tfaws-ec2-s3/
+      terraform init
+      terraform validate
+      terraform plan
+      terraform apply -auto-approve
