@@ -15,7 +15,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./terraform
+        working-directory: ./tfaws-ec2-s3
 
     steps: 
       # Step 1: Checkout the repository
