@@ -10,6 +10,7 @@
 # 10 Associate the Route table with the public and private subnet
 # 11 Define SSH Key generation for AWS EC2 instance
 # 12 Deploy AWS EC2 instance
+# 13 S3 Bucket deploy only if not existing
 
 # 1 Retrieve the list of AZs in the current AWS region
 data "aws_availability_zones" "available" {}
@@ -210,4 +211,25 @@ resource "aws_instance" "demo_app" {
     Name        = var.instane_name
     Environment = terraform.workspace
   }
+}
+
+# 13 Deploy S3 Bucket only if its not available
+
+data "aws_s3_bucket" "existing_bucket" {
+  bucket = "mytf-state-app-bucket"
+}
+
+resource "aws_s3_bucket" "state_bucket" {
+  bucket = "mytf-state-app-bucket"
+  count = length(data.aws_s3_bucket.existing_bucket.id) == 0 ? 1 : 0
+
+tags = {
+    Name        = "Terraform State Bucket"
+    Environment = "Production"
+  }
+}
+
+# Output to confirm bucket creation or existence
+output "s3_bucket_status" {
+  value = length(data.aws_s3_bucket.existing_bucket.id) == 0 ? "Bucket created" : "Bucket already exists"
 }
