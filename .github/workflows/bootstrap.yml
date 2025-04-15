@@ -10,7 +10,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: ./bootstrap
+        working-directory: .terraform/bootstrap
 
     steps:
       # Step 1: Checkout the repository
