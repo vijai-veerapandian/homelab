@@ -10,7 +10,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: .terraform/infrastructure
+        working-directory: terraform/infrastructure
 
     steps:
       # Step 1: Checkout the repository
