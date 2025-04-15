@@ -41,4 +41,4 @@ jobs:
 
       # Step 4: Terraform destroy (only on push to main)
       - name: Terraform Destroy
-        run: terraform -destroy -auto-approve
+        run: terraform apply -destroy -auto-approve
