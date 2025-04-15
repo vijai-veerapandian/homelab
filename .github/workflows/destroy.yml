@@ -42,4 +42,4 @@ jobs:
       # Step 7 Terraform destroy
       - name: Terraform Destroy
         if: github.ref == 'refs/heads/main'
-        run: terraform apply destroy -auto-approve
+        run: terraform apply -destroy -auto-approve

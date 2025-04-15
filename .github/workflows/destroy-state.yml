@@ -31,6 +31,14 @@ jobs:
         with:
           terraform_version: 1.4.6
 
+      # Step 4: Initialize Terraform (without backend)
+      - name: Terraform Init
+        run: terraform init -backend=false
+
+      # Step 5: Terraform Plan
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+
       # Step 4: Terraform destroy (only on push to main)
       - name: Terraform Destroy
-        run: terraform destroy
+        run: terraform -destroy -auto-approve
