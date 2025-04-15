@@ -37,7 +37,7 @@ jobs:
 
       # Step 5: Terraform Plan
       - name: Terraform Plan
-        run: terraform plan -out=tfplan
+        run: terraform plan
 
       # Step 4: Terraform destroy (only on push to main)
       - name: Terraform Destroy
