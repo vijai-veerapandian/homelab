@@ -65,7 +65,7 @@ jobs:
 
       # Step 11: State file
       - name: Terraform remove bucket state
-        run: terraform state rm mytf-state-app-bucket
+        run: terraform state rm aws_s3_bucket.state_bucket
         working-directory: terraform/bootstrap
 
       # Step 12: State file
