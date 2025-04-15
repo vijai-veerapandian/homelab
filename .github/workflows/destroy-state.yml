@@ -1,11 +1,11 @@
-name: Bootstrap Terraform Backend
+name: Terraform Destroy
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: 
 
 jobs:
-  bootstrap:
-    name: Bootstrap Terraform Backend
+  destroy-state:
+    name: Terraform Workflow
     runs-on: ubuntu-latest
 
     defaults:
@@ -31,14 +31,15 @@ jobs:
         with:
           terraform_version: 1.4.6
 
-      # Step 4: Initialize Terraform (without backend)
+      # Step 4: Initialize Terraform
       - name: Terraform Init
-        run: terraform init -backend=false
+        run: terraform init
 
       # Step 5: Terraform Plan
       - name: Terraform Plan
-        run: terraform plan -out=tfplan
+        run: terraform plan
 
-      # Step 6: Terraform Apply
-      - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan
+      # Step 6: Terraform destroy (only on push to main)
+      - name: Terraform Destroy
+        if: github.ref == 'refs/heads/main'
+        run: terraform destroy

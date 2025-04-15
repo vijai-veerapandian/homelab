@@ -1,6 +1,14 @@
+provider "aws" {
+  region =  var.aws_region
+}
+ 
 # create S3 bucket for terraform state
 resource "aws_s3_bucket" "state_bucket" {
   bucket = "mytf-state-app-bucket"
+
+  lifecycle {
+    prevent_destroy = false
+  }
 
   tags = {
     Name        = "Terraform State Bucket"
@@ -28,6 +36,9 @@ resource "aws_s3_bucket_public_access_block" "state_bucket_block" {
 resource "aws_dynamodb_table" "terraform_lock_table" {
   name         = "terraform-lock-table"
   billing_mode = "PAY_PER_REQUEST"
+
+# Define the primary key
+hash_key = "LockID"
 
   attribute {
     name = "LockID"

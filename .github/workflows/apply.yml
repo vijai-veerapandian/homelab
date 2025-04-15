@@ -8,6 +8,10 @@ jobs:
     name: Terraform Workflow
     runs-on: ubuntu-latest
 
+    defaults: 
+      run:
+        working-directory: ./infrastructure
+
     steps:
       # Step 1: Checkout the repository
       - name: Checkout code
