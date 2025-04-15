@@ -31,15 +31,7 @@ jobs:
         with:
           terraform_version: 1.4.6
 
-      # Step 4: Initialize Terraform
-      - name: Terraform Init
-        run: terraform init
-
-      # Step 5: Terraform Plan
-      - name: Terraform Plan
-        run: terraform plan
-
-      # Step 6: Terraform destroy (only on push to main)
+      # Step 4 Terraform destroy (only on push to main)
       - name: Terraform Destroy
         if: github.ref == 'refs/heads/main'
         run: terraform destroy -auto-approve
