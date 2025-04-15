@@ -8,67 +8,67 @@ jobs:
     name: Terraform Workflow
     runs-on: ubuntu-latest
 
-  steps:
+    steps:
       # Step 1: Checkout the repository
-    - name: Checkout code
-      uses: actions/checkout@v3
-      
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       # Step 2: Configure AWS Credentials
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-      aws-access-key-id: ${{ secrets.TERRAFORMUSER_AWS_ACCESSKEY }}
-      aws-secret-access-key: ${{ secrets.TERRAFORMUSER_AWS_SECRET_ACCESSKEY}}
-      aws-region: us-east-1
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.TERRAFORMUSER_AWS_ACCESSKEY }}
+          aws-secret-access-key: ${{ secrets.TERRAFORMUSER_AWS_SECRET_ACCESSKEY}}
+          aws-region: us-east-1
 
       # Step 3: Set up Terraform
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
-      with:
-        terraform_version: 1.4.6
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.4.6
 
       # Step 4: initialize Terraform
-    - name: Terraform Initialization
-      run: terraform init
-      working-directory: terraform/infrastructure
+      - name: Terraform Initialization
+        run: terraform init
+        working-directory: terraform/infrastructure
 
       # Step 5: Terraform planning
-    - name: Terraform plannning
-      run: terraform plan
-      working-directory: terraform/infrastructure
+      - name: Terraform plannning
+        run: terraform plan
+        working-directory: terraform/infrastructure
 
       # Step 6: Terraform destroy
-    - name: Terraform Destroy
-      if: github.ref == 'refs/heads/main'
-      run: terraform apply -destroy -auto-approve
-      working-directory: terraform/infrastructure
+      - name: Terraform Destroy
+        if: github.ref == 'refs/heads/main'
+        run: terraform apply -destroy -auto-approve
+        working-directory: terraform/infrastructure
 
       # Step 7: State file
-    - name: Terraform state file
-      run: terraform init
-      working-directory: terraform/bootstrap
+      - name: Terraform state file
+        run: terraform init
+        working-directory: terraform/bootstrap
 
       # Step 8: State file
-    - name: Terraform state file plan
-      run: terraform plan 
-      working-directory: terraform/bootstrap
+      - name: Terraform state file plan
+        run: terraform plan 
+        working-directory: terraform/bootstrap
 
       # Step 9: State file
-    - name: Terraform import remote resources
-      run: terraform import aws_s3_bucket.state_bucket mytf-state-app-bucket
-      working-directory: terraform/bootstrap
+      - name: Terraform import remote resources
+        run: terraform import aws_s3_bucket.state_bucket mytf-state-app-bucket
+        working-directory: terraform/bootstrap
 
       # Step 10: state file
-    - name: Terraform import remote resources
-      run: terraform import aws_dynamodb_table.terraform_lock_table terraform-lock-table
-      working-directory: terraform/bootstrap
+      - name: Terraform import remote resources
+        run: terraform import aws_dynamodb_table.terraform_lock_table terraform-lock-table
+        working-directory: terraform/bootstrap
 
       # Step 11: State file
-    - name: Terraform remove bucket state
-      run: terraform state rm mytf-state-app-bucket
-      working-directory: terraform/bootstrap
+      - name: Terraform remove bucket state
+        run: terraform state rm mytf-state-app-bucket
+        working-directory: terraform/bootstrap
 
       # Step 12: State file
-    - name: Terraform destroy 
-      run: terraform apply -destroy -auto-approve
-      working-directory: terraform/bootstrap
+      - name: Terraform destroy 
+        run: terraform apply -destroy -auto-approve
+        working-directory: terraform/bootstrap
