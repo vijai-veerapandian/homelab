@@ -4,8 +4,8 @@ on:
     workflow_dispatch: 
         
 jobs:
-  apply:
-    name: Deploy Application using GitHubs action
+  deploy:
+    name: Deploy Application using GitHub Actions
     runs-on: ubuntu-latest
 
     steps:
@@ -13,21 +13,36 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         
-        # step 2: download ssh key artifact
+      # Step 2: Download SSH key artifact
       - name: Download SSH key artifact
         uses: actions/download-artifact@v3
         with:
           name: ec2-ssh-key
           path: terraform/infrastructure
 
-
-        # step 3: set SSH key permissions
+      # Step 3: Set SSH key permissions
       - name: Set SSH key permissions
         run: chmod 600 terraform/infrastructure/ec2awskey.pem
 
-        # step 4: Get EC2 public IP
-      - name: Get EC2 public IP
+      # Step 4: Configure AWS Credentials
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.TERRAFORMUSER_AWS_ACCESSKEY }}
+          aws-secret-access-key: ${{ secrets.TERRAFORMUSER_AWS_SECRET_ACCESSKEY }}
+          aws-region: us-east-1
+
+      # Step 5: Retrieve EC2 public IP from Terraform state in S3
+      - name: Retrieve EC2 public IP
         id: ec2_ip
+        run: |
+          terraform init -backend-config="bucket=mytf-state-app-bucket" \
+                         -backend-config="key=terraform/state.tfstate" \
+                         -backend-config="region=us-east-1"
+          echo "::set-output name=ec2_public_ip::$(terraform output -raw ec2_public_ip)"
+
+      # Step 6: SSH into EC2 and deploy the application
+      - name: Deploy application on EC2
         run: |
           ssh -o StrictHostKeyChecking=no -i terraform/infrastructure/ec2awskey.pem ubuntu@${{ steps.ec2_ip.outputs.ec2_public_ip }} << 'EOF'
           sudo apt-get update -y
