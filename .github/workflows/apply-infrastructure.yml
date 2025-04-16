@@ -48,9 +48,11 @@ jobs:
       - name: Verify SSH Key File
         run: ls -l terraform/infrastructure/ec2awskey.pem
 
-      # Step 8: Upload SSH Key as artifact
-      - name: Upload SSH Key as artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: ec2-ssh-key
-          path: terraform/infrastructure/ec2awskey.pem
+##
+#      # Step 8: Upload SSH Key as artifact
+#      - name: Upload SSH Key as artifact
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: ec2-ssh-key
+#         path: terraform/infrastructure/ec2awskey.pem
+##
