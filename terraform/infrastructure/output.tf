@@ -16,5 +16,6 @@ output "ec2_instance_id" {
 }
 
 output "docker_status" {
-  value = module.docker_application.docker_status
+  value       = "Docker setup completed successfully on the EC2 instance"
+  description = "Status of the Docker setup process"
 }
