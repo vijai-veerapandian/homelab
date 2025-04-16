@@ -209,12 +209,6 @@ resource "aws_instance" "demo_app" {
   }
 }
 
-module "docker_deployment" {
-  source           = "../docker-deployment" # Path to the docker-deployment folder
-  ec2_public_ip    = aws_instance.demo_app.public_ip
-  private_key_path = "ec2awskey.pem" # Path to the private key
-}
-
 # 13 Backend configuration for S3 and DynamoDB
 
 terraform {

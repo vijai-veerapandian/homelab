@@ -5,7 +5,7 @@ on:
         
 jobs:
   apply:
-    name: Terraform Workflow
+    name: Provision Infrastructure with Terraform
     runs-on: ubuntu-latest
 
     defaults: 
