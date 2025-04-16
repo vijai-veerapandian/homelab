@@ -50,7 +50,7 @@ jobs:
 
       # Step 8: Upload SSH Key as artifact
       - name: Upload SSH Key as artifact
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v2
         with:
           name: ec2-ssh-key
           path: terraform/infrastructure/ec2awskey.pem
