@@ -44,7 +44,11 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve
 
-      # Step 7: Upload SSH key as artifact
+      # Step 7: Verify SSH Key File
+      - name: Verify SSH Key File
+        run: ls -l terraform/infrastructure/ec2awskey.pem
+
+      # Step 8: Upload SSH Key as artifact
       - name: Upload SSH Key as artifact
         uses: actions/upload-artifact@v3
         with:
