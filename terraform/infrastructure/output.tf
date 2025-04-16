@@ -14,3 +14,7 @@ output "ec2_instance_id" {
   value = aws_instance.demo_app.id
   description = "Id of the EC2 instance."
 }
+
+output "docker_status" {
+  value = module.docker_application.docker_status
+}

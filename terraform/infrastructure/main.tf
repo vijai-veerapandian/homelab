@@ -223,3 +223,9 @@ terraform {
 provider "aws" {
   region = var.aws_region
 }
+
+module "docker_application" {
+  source              = "../docker-application"
+  ec2_public_ip       = aws_instance.demo_app.public_ip
+  ssh_private_key_path = "ec2awskey.pem"
+}
