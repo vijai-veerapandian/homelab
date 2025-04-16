@@ -47,6 +47,14 @@ resource "aws_security_group" "demo_sg" {
     description = "Allow http inbound traffic"
   }
 
+    ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow https inbound traffic"
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
