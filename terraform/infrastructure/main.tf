@@ -216,6 +216,45 @@ resource "aws_instance" "demo_app" {
   }
 }
 
+# Docker setup using remote-exec provisioner
+resource "null_resource" "docker_setup" {
+  provisioner "remote-exec" {
+    connection {
+      type        = "ssh"
+      host        = aws_instance.demo_app.public_ip
+      user        = "ubuntu"
+      private_key = file("ec2awskey.pem")
+    }
+
+    inline = [
+  "set -e",  # Stop on the first error
+  "set -x",  # Print each command before execution
+  "sudo apt update",
+  # "sudo apt install -y apt-transport-https ca-certificates curl software-properties-common gnupg lsb-release",
+  # "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg",
+
+  # "echo 'deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu noble stable' | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null",
+  # "sudo apt-get update -y",
+  # "sudo apt install -y docker-ce docker-ce-cli containerd.io",
+  # "sudo systemctl enable docker",
+  # "sudo systemctl start docker",
+  # "sudo usermod -aG docker ubuntu",
+  # "sudo apt-get install docker-compose -y",
+  # "docker --version",
+  # "docker-compose --version",
+  # "echo '=================================================='",
+  # "echo 'Docker and Docker Compose have been installed!'",
+  # "echo 'You may need to log out and log back in for group changes to take effect.'",
+  # "echo '=================================================='",
+  # "echo 'Download myweather-app application and bring up the docker-compose up'",
+  # "git clone https://github.com/vijai-veerapandian/myweather-app.git /home/ubuntu/app || true",
+  # "cd /home/ubuntu/app && sudo docker-compose up -d"
+    ]
+  }
+
+  depends_on = [aws_instance.demo_app]
+}
+
 # 13 Backend configuration for S3 and DynamoDB
 
 terraform {
@@ -230,10 +269,4 @@ terraform {
 
 provider "aws" {
   region = var.aws_region
-}
-
-module "docker_application" {
-  source              = "../docker-application"
-  ec2_public_ip       = aws_instance.demo_app.public_ip
-  ssh_private_key_path = "ec2awskey.pem"
 }
