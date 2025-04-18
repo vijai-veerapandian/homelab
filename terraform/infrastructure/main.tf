@@ -31,35 +31,51 @@ resource "aws_security_group" "demo_sg" {
   description = "demo security group"
   vpc_id      = aws_vpc.demo_vpc.id
 
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow ssh inbound traffic"
-  }
+  # ingress {
+  #   from_port   = 22
+  #   to_port     = 22
+  #   protocol    = "tcp"
+  #   cidr_blocks = ["0.0.0.0/0"]
+  #   description = "Allow ssh inbound traffic"
+  # }
+
+  # ingress {
+  #   from_port   = 80
+  #   to_port     = 80
+  #   protocol    = "tcp"
+  #   cidr_blocks = ["0.0.0.0/0"]
+  #   description = "Allow http inbound traffic"
+  # }
+
+  #   ingress {
+  #   from_port   = 443
+  #   to_port     = 443
+  #   protocol    = "tcp"
+  #   cidr_blocks = ["0.0.0.0/0"]
+  #   description = "Allow https inbound traffic"
+  # }
+
+  # egress {
+  #   from_port   = 0
+  #   to_port     = 0
+  #   protocol    = "-1"
+  #   cidr_blocks = ["0.0.0.0/0"]
+  #   description = "Allow all outbound traffic"
+  # }
 
   ingress {
-    from_port   = 80
-    to_port     = 80
+    from_port   = 0
+    to_port     = 65535
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow http inbound traffic"
-  }
-
-    ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow https inbound traffic"
+    cidr_blocks = ["0.0.0.0/0"] # Allow all inbound traffic
+    description = "Allow all inbound traffic for testing"
   }
 
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"] # Allow all outbound traffic
     description = "Allow all outbound traffic"
   }
 
@@ -230,6 +246,16 @@ resource "null_resource" "docker_setup" {
   "set -e",  # Stop on the first error
   "set -x",  # Print each command before execution
   "sudo apt update",
+  "curl -fsSL https://get.docker.com -o get-docker.sh",
+  "sudo sh get-docker.sh",
+  "sudo systemctl enable docker",
+  "sudo systemctl start docker",
+  "sudo usermod -aG docker ubuntu",
+  "sudo apt-get install docker-compose -y",
+  "docker --version",
+  "docker-compose --version",
+  "sleep 10",
+  "git clone --branch testv2 https://github.com/vijai-veerapandian/myweather-app.git /home/ubuntu/app || true",
   # "sudo apt install -y apt-transport-https ca-certificates curl software-properties-common gnupg lsb-release",
   # "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg",
 
