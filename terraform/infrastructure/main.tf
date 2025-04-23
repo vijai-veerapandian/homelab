@@ -255,26 +255,11 @@ resource "null_resource" "docker_setup" {
   "docker --version",
   "docker-compose --version",
   "sleep 10",
-  "git clone --branch testv2 https://github.com/vijai-veerapandian/myweather-app.git /home/ubuntu/app || true",
-  # "sudo apt install -y apt-transport-https ca-certificates curl software-properties-common gnupg lsb-release",
-  # "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg",
-
-  # "echo 'deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu noble stable' | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null",
-  # "sudo apt-get update -y",
-  # "sudo apt install -y docker-ce docker-ce-cli containerd.io",
-  # "sudo systemctl enable docker",
-  # "sudo systemctl start docker",
-  # "sudo usermod -aG docker ubuntu",
-  # "sudo apt-get install docker-compose -y",
-  # "docker --version",
-  # "docker-compose --version",
-  # "echo '=================================================='",
-  # "echo 'Docker and Docker Compose have been installed!'",
-  # "echo 'You may need to log out and log back in for group changes to take effect.'",
-  # "echo '=================================================='",
-  # "echo 'Download myweather-app application and bring up the docker-compose up'",
-  # "git clone https://github.com/vijai-veerapandian/myweather-app.git /home/ubuntu/app || true",
-  # "cd /home/ubuntu/app && sudo docker-compose up -d"
+  "sudo docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions",
+  "sudo docker plugin ls",
+  "sleep 5",
+  "git clone --branch testv4 https://github.com/vijai-veerapandian/myweather-app.git /home/ubuntu/app || true",
+  "cd /home/ubuntu/app && sudo docker-compose up -d"
     ]
   }
 
